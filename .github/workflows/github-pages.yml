@@ -44,11 +44,14 @@ jobs:
         run: |
           mv * v${{ steps.get_commits.outputs.COMMITS }} | mkdir v${{ steps.get_commits.outputs.COMMITS }}
 
-      # Download previous files from branch gh-pages
-      - name: Download previous files
+      # Download existing page artifacts
+      - name: Download artifact
         uses: actions/download-artifact@v2
-        with:
-          name: gh-pages
+      
+      # list all folders
+      - name: Display folders
+        run: |
+          ls -l
 
       # Remove "latest" folder and copy v{commits} folder to "latest"
       - name: Create latest folder
