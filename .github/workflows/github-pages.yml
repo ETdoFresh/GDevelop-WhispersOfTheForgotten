@@ -1,15 +1,11 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["master"]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
@@ -22,11 +18,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,25 +40,18 @@ jobs:
         run: |
           mv * v${{ steps.get_commits.outputs.COMMITS }} | mkdir v${{ steps.get_commits.outputs.COMMITS }}
 
-      # Download all existing folders from gh-pages
+      # Download all existing folders from gh-pages https://github.com/ETdoFresh/GDevelop-WhispersOfTheForgotten.git
       - name: Download existing folders
         run: |
-          git clone --depth 1 --branch gh-pages
+          git clone https://github.com/ETdoFresh/GDevelop-WhispersOfTheForgotten.git gh-pages --branch gh-pages --depth 1
+          
 
       # Remove "latest" folder and copy v{commits} folder to "latest"
       - name: Create latest folder
         run: |
-          rm -rf latest
-          cp -r v${{ steps.get_commits.outputs.COMMITS }} latest
-
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v2
-      #   with:
-      #     path: './'
-
-      # - name: Deploy to GitHub Pages
-      #   id: deployment
-      #   uses: actions/deploy-pages@v2
+          rm -rf gh-pages/latest
+          mv v${{ steps.get_commits.outputs.COMMITS }} gh-pages/v${{ steps.get_commits.outputs.COMMITS }}
+          cp -r gh-pages/v${{ steps.get_commits.outputs.COMMITS }} gh-pages/latest
 
       # Commit and push changes to gh-pages
       - name: Commit and push changes
@@ -73,6 +62,7 @@ jobs:
           git add .
           git commit -m "Deploy v${{ steps.get_commits.outputs.COMMITS }} to GitHub Pages"
           git push
+          cd ..
 
       # Dispay folders on GitHub Pages
       - name: Display folders
@@ -80,6 +70,15 @@ jobs:
           ls -l
           ls -l v${{ steps.get_commits.outputs.COMMITS }}
           ls -l latest
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './gh-pages'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
       
       - name: Discord notification
         env:
