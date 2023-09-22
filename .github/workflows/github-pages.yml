@@ -40,29 +40,25 @@ jobs:
         run: |
           mv * v${{ steps.get_commits.outputs.COMMITS }} | mkdir v${{ steps.get_commits.outputs.COMMITS }}
 
-      # Download all existing folders from gh-pages https://github.com/ETdoFresh/GDevelop-WhispersOfTheForgotten.git
-      - name: Download existing folders
-        run: |
-          git clone https://github.com/ETdoFresh/GDevelop-WhispersOfTheForgotten.git gh-pages --branch gh-pages --depth 1
-          
+      - name: Checkout gh-pages
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
 
       # Remove "latest" folder and copy v{commits} folder to "latest"
       - name: Create latest folder
         run: |
-          rm -rf gh-pages/latest
-          mv v${{ steps.get_commits.outputs.COMMITS }} gh-pages/v${{ steps.get_commits.outputs.COMMITS }}
-          cp -r gh-pages/v${{ steps.get_commits.outputs.COMMITS }} gh-pages/latest
+          rm -rf latest
+          cp -r v${{ steps.get_commits.outputs.COMMITS }} latest
 
       # Commit and push changes to gh-pages
       - name: Commit and push changes
         run: |
-          cd gh-pages
           git config --global user.email "ETdoFresh@gmail.com"
           git config --global user.name "ETdoFresh"
           git add .
           git commit -m "Deploy v${{ steps.get_commits.outputs.COMMITS }} to GitHub Pages"
           git push
-          cd ..
 
       # Dispay folders on GitHub Pages
       - name: Display folders
