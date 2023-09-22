@@ -44,20 +44,35 @@ jobs:
         run: |
           mv * v${{ steps.get_commits.outputs.COMMITS }} | mkdir v${{ steps.get_commits.outputs.COMMITS }}
 
+      # Download all existing folders from gh-pages
+      - name: Download existing folders
+        run: |
+          git clone --depth 1 --branch gh-pages
+
       # Remove "latest" folder and copy v{commits} folder to "latest"
       - name: Create latest folder
         run: |
           rm -rf latest
           cp -r v${{ steps.get_commits.outputs.COMMITS }} latest
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: './'
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v2
+      #   with:
+      #     path: './'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v2
+
+      # Commit and push changes to gh-pages
+      - name: Commit and push changes
+        run: |
+          cd gh-pages
+          git config --global user.email "ETdoFresh@gmail.com"
+          git config --global user.name "ETdoFresh"
+          git add .
+          git commit -m "Deploy v${{ steps.get_commits.outputs.COMMITS }} to GitHub Pages"
+          git push
 
       # Dispay folders on GitHub Pages
       - name: Display folders
@@ -79,7 +94,7 @@ jobs:
             { "name": "Event", "value": "${{github.event_name}}", "inline": true },
             { "name": "Commit", "value": "[${{steps.get_short_sha.outputs.SHORT_SHA}}](https://github.com/${{github.repository}}/commit/${{github.sha}})", "inline": true },
             { "name": "Version", "value": "*v${{steps.get_commits.outputs.COMMITS}}*", "inline": true },
-            { "name": "Commit Message", "value": "`${{github.event.head_commit.message}}`" },
+            { "name": "Commit Message", "value": "`${{github.event.head_commit.message}}`" }
             ],
             "color":6710886,
             "timestamp": "${{github.event.head_commit.timestamp}}",
