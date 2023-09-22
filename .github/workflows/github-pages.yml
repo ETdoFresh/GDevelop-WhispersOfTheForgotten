@@ -42,7 +42,7 @@ jobs:
       # Move all files to v{commits} folder
       - name: Move files
         run: |
-          mkdir -p v${{ steps.get_commits.outputs.COMMITS }}
+          mkdir v${{ steps.get_commits.outputs.COMMITS }}
           mv * v${{ steps.get_commits.outputs.COMMITS }}
 
       # Download previous files from branch gh-pages
@@ -65,6 +65,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+
+      # Dispay folders on GitHub Pages
+      - name: Display folders
+        run: |
+          ls -l
+          ls -l v${{ steps.get_commits.outputs.COMMITS }}
+          ls -l latest
       
       - name: Discord notification
         env:
