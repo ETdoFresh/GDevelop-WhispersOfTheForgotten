@@ -36,6 +36,10 @@ jobs:
       - name: Get number of commits in current branch
         id: get_commits
         run: echo "COMMITS=$(git rev-list --count master)" >> "$GITHUB_OUTPUT"
+      
+      - name: Get Short SHA
+        id: get_short_sha
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       # Move all files to v{commits} folder
       - name: Move files
@@ -67,7 +71,6 @@ jobs:
       - name: Display folders
         run: |
           ls -l
-          ls -l v${{ steps.get_commits.outputs.COMMITS }}
           ls -l latest
         
       - name: Upload artifact
