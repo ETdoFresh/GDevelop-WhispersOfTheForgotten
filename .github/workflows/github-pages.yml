@@ -42,8 +42,7 @@ jobs:
       # Move all files to v{commits} folder
       - name: Move files
         run: |
-          mkdir v${{ steps.get_commits.outputs.COMMITS }}
-          mv * v${{ steps.get_commits.outputs.COMMITS }}
+          mv * v${{ steps.get_commits.outputs.COMMITS }} | mkdir v${{ steps.get_commits.outputs.COMMITS }}
 
       # Download previous files from branch gh-pages
       - name: Download previous files
