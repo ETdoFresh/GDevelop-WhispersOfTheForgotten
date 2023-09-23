@@ -100,7 +100,7 @@ export class GDevelopBehavior {
         });
     }
 
-    static exec(runtimeScene, eventsFunctionContext, func) {
+    static exec(runtimeScene, eventsFunctionContext, func, ...args) {
         let value = null;
         const objects = eventsFunctionContext._objectArraysMap.Object;
         const behaviorName = eventsFunctionContext._behaviorNamesMap.Behavior;
@@ -113,7 +113,7 @@ export class GDevelopBehavior {
             behaviorScript.runtimeScene = runtimeScene;
             behaviorScript.eventFunctionContext = eventsFunctionContext;
             if (behaviorScript[func])
-                value = behaviorScript[func]();
+                value = behaviorScript[func](...args);
         });
         return value;
     }
@@ -144,6 +144,12 @@ export class GDevelopBehavior {
     get ObjectAngle() { return this._object.getAngle(); }
     set ObjectAngle(value) { this._object.setAngle(value); }
     get Name() { return this._object.getName(); }
+    get ObjectCenterX() { return this._object.getPoint ? this._object.getPoint("Center").getX() : this._object.getCenterX ? this.ObjectX + this._object.getCenterX() : undefined; }
+    get ObjectCenterY() { return this._object.getPoint ? this._object.getPoint("Center").getY() : this._object.getCenterY ? this.ObjectY + this._object.getCenterY() : undefined; }
+    get ObjectGroundX() { return this._object.getPoint ? this._object.getPoint("Ground").getX() : undefined; }
+    get ObjectGroundY() { return this._object.getPoint ? this._object.getPoint("Ground").getY() : undefined; }
+    get ObjectWidth() { return this._object.getWidth(); }
+    get ObjectHeight() { return this._object.getHeight(); }
 
     constructor(object, behavior) {
         this._object = object;
@@ -162,9 +168,11 @@ export class GDevelopBehavior {
         return instancesWithBehavior.map(instance => instance.getBehavior(behaviorName)._behaviorData.GDevelopBehavior);
     }
 
-    getDistanceTo(object) {
-        const otherX = object.ObjectX !== undefined ? object.ObjectX : object.getX();
-        const otherY = object.ObjectY !== undefined ? object.ObjectY : object.getY();
-        return Math.sqrt(Math.pow(this.ObjectX - otherX, 2) + Math.pow(this.ObjectY - otherY, 2));
+    getDistanceTo(other) {
+        const thisX = this.ObjectGroundX !== undefined ? this.ObjectGroundX : this.ObjectCenterX !== undefined ? this.ObjectCenterX : this.ObjectX;
+        const thisY = this.ObjectGroundY !== undefined ? this.ObjectGroundY : this.ObjectCenterY !== undefined ? this.ObjectCenterY : this.ObjectY;
+        const otherX = other.ObjectGroundX !== undefined ? other.ObjectGroundX : other.ObjectCenterX !== undefined ? other.ObjectCenterX : other.ObjectX;
+        const otherY = other.ObjectGroundY !== undefined ? other.ObjectGroundY : other.ObjectCenterY !== undefined ? other.ObjectCenterY : other.ObjectY;
+        return Math.sqrt(Math.pow(thisX - otherX, 2) + Math.pow(thisY - otherY, 2));
     }
 }
