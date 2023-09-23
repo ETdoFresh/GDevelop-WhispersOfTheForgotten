@@ -143,14 +143,28 @@ export class GDevelopBehavior {
     set ObjectY(value) { this._object.setY(value); }
     get ObjectAngle() { return this._object.getAngle(); }
     set ObjectAngle(value) { this._object.setAngle(value); }
+    get Name() { return this._object.getName(); }
 
     constructor(object, behavior) {
         this._object = object;
         this._behavior = behavior;
         this._behaviorData = behavior._behaviorData;
+        this._behaviorData.GDevelopBehavior = this;
     }
 
     getBehavior(behaviorName) {
         return this._object.getBehavior(behaviorName);
+    }
+
+    findObjectsOfType(behaviorName) {
+        const allInstances = this.runtimeScene._allInstancesList;
+        const instancesWithBehavior = allInstances.filter(instance => instance.getBehavior(behaviorName));
+        return instancesWithBehavior.map(instance => instance.getBehavior(behaviorName)._behaviorData.GDevelopBehavior);
+    }
+
+    getDistanceTo(object) {
+        const otherX = object.ObjectX !== undefined ? object.ObjectX : object.getX();
+        const otherY = object.ObjectY !== undefined ? object.ObjectY : object.getY();
+        return Math.sqrt(Math.pow(this.ObjectX - otherX, 2) + Math.pow(this.ObjectY - otherY, 2));
     }
 }
