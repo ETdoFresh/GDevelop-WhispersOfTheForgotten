@@ -34,8 +34,8 @@ export class AnimatedSpriteSheet extends GDevelopBehavior {
                     const frameData = this.spriteSheet.frames[frameName];
                     const frame = frameData.frame;
                     const rotated = frameData.rotated;
-                    const sourceSize = frameData.sourceSize;
-                    const spriteSourceSize = frameData.spriteSourceSize;
+                    const ss = frameData.sourceSize;
+                    const sss = frameData.spriteSourceSize;
                     const trimmed = frameData.trimmed;
                     frameNames[animationName] = frameNames[animationName] || [];
                     frameNames[animationName].push(frameName);
@@ -43,7 +43,7 @@ export class AnimatedSpriteSheet extends GDevelopBehavior {
                     frameDatas[animationName].push(frameData);
 
                     const spriteFrameData = {
-                        centerPoint: { x: sourceSize.w / 2, y: sourceSize.h / 2 },
+                        centerPoint: { x: ss.w / 2, y: ss.h / 2 },
                         hasCustomCollisionMask: true,
                         customCollisionMask: spriteSheetFrame.customHitBoxes,
                         image: spriteSheetFrame.image,
@@ -75,11 +75,15 @@ export class AnimatedSpriteSheet extends GDevelopBehavior {
                     const sss = frameDatasArray[j].spriteSourceSize;
                     animationFrames[j].image = frameNamesArray[j];
                     const frameRect = new PIXI.Rectangle(frame.x, frame.y, frame.w, frame.h);
-                    const origRect = new PIXI.Rectangle(0, 0, ss.w, ss.h);
-                    const trimRect = new PIXI.Rectangle(0, 0, sss.w, sss.h);
+                    const origRect = new PIXI.Rectangle(0, 0, 64, 64);
+                    const centerX = ss.w / 2;
+                    const anchorX = centerX / frame.w * ss.w;
+                    const centerY = ss.h / 2;
+                    const anchorY = centerY / frame.h * ss.h;
+                    const trimRect = new PIXI.Rectangle(anchorX + sss.x - ss.w / 2, anchorY + sss.y - ss.h / 2, sss.w, sss.h);
                     const rotate = frameDatasArray[j].rotated;
                     animationFrames[j].texture = new PIXI.Texture(spriteSheetFrame.texture.baseTexture, frameRect, origRect, trimRect);
-                    animationFrames[j].texture.requiresUpdate = true;
+                    animationFrames[j].trim = trimRect;
                     console.log(animationFrames[j].texture);
                 }
 
