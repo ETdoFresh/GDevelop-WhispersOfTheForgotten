@@ -74,12 +74,13 @@ export class AnimatedSpriteSheet extends GDevelopBehavior {
                     const ss = frameDatasArray[j].sourceSize;
                     const sss = frameDatasArray[j].spriteSourceSize;
                     animationFrames[j].image = frameNamesArray[j];
-                    animationFrames[j].texture = new PIXI.Texture(spriteSheetFrame.texture.baseTexture);
-                    animationFrames[j].texture.anchor = new PIXI.Point(0, 0);
-                    animationFrames[j].texture.frame = new PIXI.Rectangle(frame.x, frame.y, frame.w, frame.h);
-                    //animationFrames[j].texture.orig = new PIXI.Rectangle(0, 0, ss.w, ss.h);
-                    animationFrames[j].texture.trim = new PIXI.Rectangle(sss.x, sss.y, sss.w, sss.h);
-                    //animationFrames[j].texture.rotate = frameDatasArray[j].rotated;
+                    const frameRect = new PIXI.Rectangle(frame.x, frame.y, frame.w, frame.h);
+                    const origRect = new PIXI.Rectangle(0, 0, ss.w, ss.h);
+                    const trimRect = new PIXI.Rectangle(0, 0, sss.w, sss.h);
+                    const rotate = frameDatasArray[j].rotated;
+                    animationFrames[j].texture = new PIXI.Texture(spriteSheetFrame.texture.baseTexture, frameRect, origRect, trimRect);
+                    animationFrames[j].texture.requiresUpdate = true;
+                    console.log(animationFrames[j].texture);
                 }
 
                 for (let j = 0; j < frameNamesArray.length; j++) {
