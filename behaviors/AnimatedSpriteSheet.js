@@ -40,7 +40,6 @@ export class AnimatedSpriteSheet extends GDevelopBehavior {
                 for (const frameIndex in animation) {
                     const frameName = animation[frameIndex];
                     const frameData = this.spriteSheet.frames[frameName];
-                    console.log(frameData, frameName);
                     const frame = frameData.frame;
                     const rotated = frameData.rotated;
                     const ss = frameData.sourceSize;

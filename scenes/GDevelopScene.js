@@ -45,6 +45,13 @@ export class GDevelopScene {
             this.scenes[sceneName].onSceneUnloading(runtimeScene, eventsFunctionContext);
     }
 
+    static addObjectGroup(runtimeScene, eventsFunctionContext, objectGroupName, objectGroup) {
+        const sceneName = runtimeScene.getName();
+        if (!this.scenes[sceneName]) return;
+        this.scenes[sceneName]._objectGroups = this.scenes[sceneName]._objectGroups || {};
+        this.scenes[sceneName]._objectGroups[objectGroupName] = objectGroup;
+    }
+
     // --------------------------------------------------
 
     constructor() { }
