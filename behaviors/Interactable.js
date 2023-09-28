@@ -1,7 +1,9 @@
 import { GDevelopBehavior } from "./GDevelopBehavior.js";
 import { EventBus } from "./EventBus.js";
-import { InteractorInteractedEvent, InteractorEnteredRangeEvent, 
-    InteractorExitedRangeEvent, InteractorType } from "./Constants.js"
+import {
+    InteractorInteractedEvent, InteractorEnteredRangeEvent,
+    InteractorExitedRangeEvent, InteractorType
+} from "./Constants.js"
 
 export class Interactable extends GDevelopBehavior {
     get InteractableRadius() { return this._behaviorData.InteractableRadius; }
@@ -38,10 +40,17 @@ export class Interactable extends GDevelopBehavior {
 
     onInteractorInteracted(interactor, interactable) {
         if (interactable !== this) return;
-        
-        console.log(`Interactor ${interactor.Name} interacted with ${interactable.Name}`);
-        let interactParticles = this.runtimeScene.createObject("InteractParticles");
-        interactParticles.setPosition(this.ObjectCenterX, this.ObjectCenterY);
-        interactParticles.setZOrder(100);
+        console.log("Interactor interacted with interactable", interactor, interactable);
+        if (gdjs.dialogueTree.isRunning()) return;
+
+        if (gdjs.dialogueTree.hasDialogueBranch(this._object.getName())) {
+            console.log("Starting dialogue tree from", this._object.getName());
+            gdjs.dialogueTree.startFrom(this._object.getName())
+        } else {
+            console.log("No dialogue tree found for", this._object.getName());
+            let interactParticles = this.runtimeScene.createObject("InteractParticles");
+            interactParticles.setPosition(this.ObjectCenterX, this.ObjectCenterY);
+            interactParticles.setZOrder(100);
+        }
     }
 }
