@@ -23,9 +23,10 @@ export class Interactor extends GDevelopBehavior {
     doStepPreEvents(delta) {
         const isInteractDown = gdjs.evtTools.input.isKeyPressed(this.runtimeScene, "e") || this._isSimulatedInteractPressed;
         const isInteractPressedThisFrame = isInteractDown && !this._wasInteractPressed;
+        const isInteractReleasedThisFrame = !isInteractDown && this._wasInteractPressed;
         this._wasInteractPressed = isInteractDown;
         
-        if (isInteractPressedThisFrame) {
+        if (isInteractReleasedThisFrame) {
             const closestInteractable = this._getClosestInteractable();
             if (closestInteractable) {
                 EventBus.invoke(InteractorInteractedEvent(), this, closestInteractable);
