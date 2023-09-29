@@ -34,6 +34,10 @@ export class Interactable extends GDevelopBehavior {
             else if (this.interactorsInRange.includes(interactor) && distance > this.InteractableRadius) {
                 this.interactorsInRange.splice(this.interactorsInRange.indexOf(interactor), 1);
                 EventBus.invoke(InteractorExitedRangeEvent(), interactor, this);
+
+                if (gdjs.dialogueTree.isRunning()) {
+                    gdjs.dialogueTree.stopRunningDialogue();
+                }
             }
         });
     }

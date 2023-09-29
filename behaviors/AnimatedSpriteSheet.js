@@ -62,7 +62,8 @@ export class AnimatedSpriteSheet extends GDevelopBehavior {
                     spriteFrameDataArray.push(spriteFrameData);
                 }
 
-                const spriteDirectionData = { looping: true, sprites: spriteFrameDataArray, timeBetweenFrames: 0.08 };
+                const looping = animation.length > 1;
+                const spriteDirectionData = { looping: looping, sprites: spriteFrameDataArray, timeBetweenFrames: 0.08 };
                 const spriteAnimationDirection = new gdjs.SpriteAnimationDirection(imageManager, spriteDirectionData);
                 const spriteAnimationData = { directions: [spriteDirectionData], name: animationName, useMultipleDirections: false };
                 const spriteAnimation = new gdjs.SpriteAnimation(imageManager, spriteAnimationData);
